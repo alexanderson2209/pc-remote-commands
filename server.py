@@ -116,7 +116,15 @@ def run_tray():
 def run_server():
     import uvicorn
 
-    uvicorn.run(app, host=config["server"]["host"], port=config["server"]["port"])
+    uvicorn.run(
+        app,
+        host=config["server"]["host"],
+        port=config["server"]["port"],
+        log_level="critical",  # set log level to critical
+        # Disable access logging. block console output
+        access_log=False,
+        log_config=None,
+    )
 
 
 def notify_startup():
@@ -133,3 +141,8 @@ if __name__ == "__main__":
         with open("server_error.log", "a", encoding="utf-8") as f:
             f.write(str(e) + "\n")
         raise
+
+sys.stdout = open(
+    os.path.join(get_base_path(), "logs.txt"), "a", encoding="utf-8"
+)  # divert stdout to logs.txt file
+sys.stderr = open(os.path.join(get_base_path(), "errors.txt"), "a", encoding="utf-8")
