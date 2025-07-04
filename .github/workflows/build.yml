@@ -27,8 +27,8 @@ jobs:
         run: |
           pyinstaller --onefile --windowed --hidden-import=plyer.platforms.win.notification --name pc-remote server.py
       
-      - name: Move config.yml to dist
-        run: copy config.yml dist\
+      - name: Move config.yaml to dist
+        run: copy config.yaml dist\
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -37,3 +37,14 @@ jobs:
           path: |
             dist/pc-remote.exe
             dist/config.yaml
+      
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.0
+          name: pc-remote v1.0.0
+          body: "First official release with packaged EXE and config."
+          files: pc-remote.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
