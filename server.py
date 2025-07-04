@@ -1,5 +1,6 @@
 import subprocess
 from fastapi import FastAPI, HTTPException, Request
+import uvicorn
 import yaml
 import os
 import threading
@@ -114,8 +115,6 @@ def run_tray():
 
 # === Run FastAPI in background ===
 def run_server():
-    import uvicorn
-
     uvicorn.run(
         app,
         host=config["server"]["host"],
@@ -128,12 +127,13 @@ def run_server():
 
 
 def notify_startup():
-    notification.notify(
-        title="PC Remote",
-        message="Server Started!",
-        app_name="PC Remote",
-        timeout=5,
-    )
+    if notification.notify is not None:
+        notification.notify(
+            title="PC Remote",
+            message="Server Started!",
+            app_name="PC Remote",
+            timeout=5,
+        )
 
 
 if __name__ == "__main__":
