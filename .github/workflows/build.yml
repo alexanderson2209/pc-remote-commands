@@ -40,7 +40,6 @@ jobs:
       
       - name: Zip dist folder
         run: Compress-Archive -Path dist\* -DestinationPath pc-remote.zip
-
       
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
@@ -48,6 +47,7 @@ jobs:
           tag_name: v1.0.0
           name: pc-remote v1.0.0
           body: "First official release with packaged EXE and config."
+          generate_release_notes: true
           files: pc-remote.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
