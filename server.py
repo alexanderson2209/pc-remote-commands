@@ -2,7 +2,11 @@ import subprocess
 from fastapi import FastAPI, HTTPException, Request
 import yaml
 import os
+import threading
 import sys
+from win11toast import toast
+from pystray import Icon, MenuItem, Menu
+from PIL import Image, ImageDraw
 
 app = FastAPI()
 
@@ -76,11 +80,55 @@ def root():
     return {"message": "Command server is running."}
 
 
-if __name__ == "__main__":
+def create_image():
+    image = Image.new("RGB", (64, 64), color="white")
+    d = ImageDraw.Draw(image)
+    d.rectangle([16, 16, 48, 48], fill="black")
+    return image
+
+
+icon = None  # placeholder
+server_thread = None
+
+
+def open_config_folder():
+    print("Opening config folder...")
+    os.startfile(get_base_path())
+
+
+def stop_app(icon_obj, item):
+    print("Exiting app...")
+    icon_obj.stop()
+    os._exit(0)  # force exit whole app, including FastAPI
+
+
+def run_tray():
+    global icon
+    menu = Menu(
+        MenuItem("Open Config Folder", lambda icon, item: open_config_folder()),
+        MenuItem("Exit App", stop_app),
+    )
+    icon = Icon("MyServer", create_image(), "My Server", menu)
+    icon.run()
+
+
+# === Run FastAPI in background ===
+def run_server():
     import uvicorn
 
+    uvicorn.run(app, host=config["server"]["host"], port=config["server"]["port"])
+
+
+def notify_startup():
+    toast("Server started!")
+
+
+if __name__ == "__main__":
     try:
-        uvicorn.run(app, host=config["server"]["host"], port=config["server"]["port"])
+        server_thread = threading.Thread(target=run_server, daemon=True)
+        server_thread.start()
+        notify_startup()
+        run_tray()  # this blocks until user exits tray
     except Exception as e:
         with open("server_error.log", "a", encoding="utf-8") as f:
             f.write(str(e) + "\n")
