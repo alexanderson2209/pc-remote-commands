@@ -27,7 +27,7 @@ jobs:
 
       - name: Build EXE with PyInstaller
         run: |
-          build.bat
+          .\build.bat
       
       - name: Move config.yaml to dist
         run: copy config.yaml dist\
