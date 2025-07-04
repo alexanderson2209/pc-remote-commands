@@ -30,5 +30,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: your-exe
-          path: dist/pc-remote.exe
+          name: pc-remote
+          path: |
+            dist/pc-remote.exe
+            config.yaml
