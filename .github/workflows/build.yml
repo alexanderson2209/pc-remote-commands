@@ -38,6 +38,10 @@ jobs:
             dist/pc-remote.exe
             dist/config.yaml
       
+      - name: Zip dist folder
+        run: Compress-Archive -Path dist\* -DestinationPath pc-remote.zip
+
+      
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
