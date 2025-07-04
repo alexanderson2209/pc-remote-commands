@@ -1,0 +1,18 @@
+server:
+  host: 0.0.0.0
+  port: 8000
+  auth_key: "supersecretkey"
+
+commands:
+  shutdown:
+    description: "Shutdown the computer"
+    command: "shutdown /s /t 0"
+  restart:
+    description: "Restart the computer"
+    command: "shutdown /r /t 0"
+  say_hello:
+    description: "Print hello in the console"
+    command: "echo Hello from server!"
+  ls:
+    description: "ls"
+    command: "dir"

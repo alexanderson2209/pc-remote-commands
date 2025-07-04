@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "PC Remote Commands Server",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

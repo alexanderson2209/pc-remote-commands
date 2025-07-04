@@ -1,0 +1,15 @@
+meta {
+  name: Test
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/run/ls
+  body: none
+  auth: none
+}
+
+headers {
+  X-Auth-Key: supersecretkey
+}
