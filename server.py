@@ -12,13 +12,20 @@ from plyer import notification
 app = FastAPI()
 
 
+def is_running_as_exe():
+    return getattr(sys, "frozen", False)
+
+
+def get_icon_folder():
+    if is_running_as_exe():
+        return os.path.join(sys._MEIPASS, "static")
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+
+
 def get_base_path():
-    if getattr(sys, "frozen", False):
-        # running as .exe
+    if is_running_as_exe():
         return os.path.dirname(sys.executable)
-    else:
-        # running as script
-        return os.path.dirname(os.path.abspath(__file__))
+    return os.path.dirname(os.path.abspath(__file__))
 
 
 # Load config initially
@@ -81,13 +88,6 @@ def root():
     return {"message": "Command server is running."}
 
 
-def create_image():
-    image = Image.new("RGB", (64, 64), color="white")
-    d = ImageDraw.Draw(image)
-    d.rectangle([16, 16, 48, 48], fill="black")
-    return image
-
-
 icon = None  # placeholder
 server_thread = None
 
@@ -109,7 +109,12 @@ def run_tray():
         MenuItem("Open Config Folder", lambda icon, item: open_config_folder()),
         MenuItem("Exit App", stop_app),
     )
-    icon = Icon("MyServer", create_image(), "My Server", menu)
+    icon = Icon(
+        "PC Remote",
+        Image.open(os.path.join(get_icon_folder(), "icon.ico")),
+        "PC Remote",
+        menu,
+    )
     icon.run()
 
 

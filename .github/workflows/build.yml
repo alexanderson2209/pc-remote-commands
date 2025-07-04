@@ -27,7 +27,7 @@ jobs:
 
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile --windowed --hidden-import=plyer.platforms.win.notification --name pc-remote server.py
+          pyinstaller --onefile --windowed --hidden-import=plyer.platforms.win.notification --icon="static\icon.ico" --name pc-remote server.py
       
       - name: Move config.yaml to dist
         run: copy config.yaml dist\
