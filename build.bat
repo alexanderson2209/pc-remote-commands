@@ -9,7 +9,7 @@ rmdir /s /q dist
 del /q %EXE_NAME%.spec
 
 echo Building exe with PyInstaller...
-pyinstaller --onefile --windowed --name %EXE_NAME% server.py
+pyinstaller --onefile --windowed --hidden-import=plyer.platforms.win.notification --name %EXE_NAME% server.py
 
 echo Copying config.yaml to dist folder...
 copy config.yaml dist\

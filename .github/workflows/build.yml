@@ -25,7 +25,10 @@ jobs:
 
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile --windowed --name pc-remote server.py
+          pyinstaller --onefile --windowed --hidden-import=plyer.platforms.win.notification --name pc-remote server.py
+      
+      - name: Move config.yml to dist
+        run: copy config.yml dist\
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -33,4 +36,4 @@ jobs:
           name: pc-remote
           path: |
             dist/pc-remote.exe
-            config.yaml
+            dist/config.yaml
