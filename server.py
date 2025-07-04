@@ -4,9 +4,9 @@ import yaml
 import os
 import threading
 import sys
-from win11toast import toast
 from pystray import Icon, MenuItem, Menu
 from PIL import Image, ImageDraw
+from plyer import notification
 
 app = FastAPI()
 
@@ -128,7 +128,12 @@ def run_server():
 
 
 def notify_startup():
-    toast("Server started!")
+    notification.notify(
+        title="PC Remote",
+        message="Server Started!",
+        app_name="PC Remote",
+        timeout=5,
+    )
 
 
 if __name__ == "__main__":

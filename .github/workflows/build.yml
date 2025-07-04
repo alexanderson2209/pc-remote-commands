@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: your-exe
-          path: dist/your_script.exe
+          path: dist/pc-remote.exe
