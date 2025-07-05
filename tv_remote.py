@@ -96,7 +96,13 @@ class TVController:
 
     def get_current_source(self):
         current_app_id: str = self.app.get_current()
-        return [x for x in self.sources if x.data["appId"] == current_app_id][0]
+        possible_source: List[InputSource] = [
+            x for x in self.sources if x.data["appId"] == current_app_id
+        ]
+        if len(possible_source) == 0:
+            return self.sources[0]
+
+        return possible_source[0]
 
     def switch_pc_to_tv(self):
         # Storing current source so we can switch back later
