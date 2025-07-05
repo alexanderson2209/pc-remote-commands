@@ -8,6 +8,7 @@ import sys
 from pystray import Icon, MenuItem, Menu
 from PIL import Image, ImageDraw
 from plyer import notification
+from tv_remote import TVController
 
 app = FastAPI()
 
@@ -29,16 +30,23 @@ def get_base_path():
 
 
 # Load config initially
-def load_config():
+def load_server_config():
     base_path = get_base_path()
     config_path = os.path.join(base_path, "config.yaml")
     with open(config_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
-config = load_config()
+config = load_server_config()
 auth_key = config["server"]["auth_key"]
 allowed_commands = config["commands"]
+
+tv = TVController(
+    config["server"]["tv_ip"],
+    config["server"]["pc_tv_profile"],
+    config["server"]["pc_desk_profile"],
+    config["server"]["pc_tv_input_label"],
+)
 
 
 @app.post("/run/{command_name}")
@@ -55,7 +63,7 @@ async def run_command(command_name: str, request: Request):
 
     if not cmd_config:
         # Reload config and try again
-        config = load_config()
+        config = load_server_config()
         allowed_commands = config["commands"]
         auth_key = config["server"]["auth_key"]  # update in case auth_key changed too
         cmd_config = allowed_commands.get(command_name)
@@ -65,8 +73,28 @@ async def run_command(command_name: str, request: Request):
             status_code=404, detail="Command not found even after reloading config."
         )
 
-    cmd = cmd_config["command"]
+    match command_name:
+        case "switch_pc_to_tv":
+            switch_pc_to_tv()
+        case "switch_pc_back":
+            switch_pc_back()
+        case _:
+            run_command_in_shell(cmd_config["command"], command_name)
 
+
+def switch_pc_to_tv():
+    # tv.open_tv_connection()
+    tv.switch_pc_to_tv()
+    # tv.close_tv_connection()
+
+
+def switch_pc_back():
+    # tv.open_tv_connection()
+    tv.switch_pc_back()
+    # tv.close_tv_connection()
+
+
+def run_command_in_shell(cmd: str, command_name: str):
     try:
         # Run the command
         result = subprocess.run(
@@ -124,10 +152,10 @@ def run_server():
         app,
         host=config["server"]["host"],
         port=config["server"]["port"],
-        log_level="critical",  # set log level to critical
-        # Disable access logging. block console output
-        access_log=False,
-        log_config=None,
+        # log_level="critical",  # set log level to critical
+        # # Disable access logging. block console output
+        # access_log=False,
+        # log_config=None,
     )
 
 

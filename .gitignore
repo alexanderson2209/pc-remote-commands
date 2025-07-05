@@ -212,3 +212,5 @@ __marimo__/
 # Project Specific
 3rd-party/*
 tv-config.json
+errors.txt
+logs.txt
