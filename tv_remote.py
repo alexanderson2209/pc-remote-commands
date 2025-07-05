@@ -32,6 +32,7 @@ def get_3rd_party_folder():
 
 
 def load_config():
+    print(f"Config Location: {get_config_location()}")
     if os.path.isfile(get_config_location()):
         with open(get_config_location(), "r", encoding="utf-8") as f:
             return json.load(f)
@@ -67,6 +68,7 @@ class TVController:
 
         self.client = WebOSClient(tv_ip, secure=True)
         self.open_tv_connection()
+        self.save()
 
         # Initialize controls
         self.media = MediaControl(self.client)
@@ -76,7 +78,6 @@ class TVController:
         # Store sources
         self.sources: List[InputSource] = self.source_control.list_sources()
         self.current_source = self.get_current_source()
-        # self.close_tv_connection()
 
     def close_tv_connection(self):
         self.client.close_connection()

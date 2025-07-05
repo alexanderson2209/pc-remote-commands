@@ -83,15 +83,11 @@ async def run_command(command_name: str, request: Request):
 
 
 def switch_pc_to_tv():
-    # tv.open_tv_connection()
     tv.switch_pc_to_tv()
-    # tv.close_tv_connection()
 
 
 def switch_pc_back():
-    # tv.open_tv_connection()
     tv.switch_pc_back()
-    # tv.close_tv_connection()
 
 
 def run_command_in_shell(cmd: str, command_name: str):
@@ -148,14 +144,16 @@ def run_tray():
 
 # === Run FastAPI in background ===
 def run_server():
+    sys.stdout = open(
+        os.path.join(get_base_path(), "logs.txt"), "a", encoding="utf-8"
+    )  # divert stdout to logs.txt file
+    sys.stderr = open(
+        os.path.join(get_base_path(), "errors.txt"), "a", encoding="utf-8"
+    )
     uvicorn.run(
         app,
         host=config["server"]["host"],
         port=config["server"]["port"],
-        log_level="critical",  # set log level to critical
-        # Disable access logging. block console output
-        access_log=False,
-        log_config=None,
     )
 
 
@@ -179,8 +177,3 @@ if __name__ == "__main__":
         with open("server_error.log", "a", encoding="utf-8") as f:
             f.write(str(e) + "\n")
         raise
-
-sys.stdout = open(
-    os.path.join(get_base_path(), "logs.txt"), "a", encoding="utf-8"
-)  # divert stdout to logs.txt file
-sys.stderr = open(os.path.join(get_base_path(), "errors.txt"), "a", encoding="utf-8")
