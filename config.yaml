@@ -2,6 +2,11 @@ server:
   host: 0.0.0.0
   port: 8000
   auth_key: "supersecretkey"
+  tv_ip: "192.168.68.119"
+  pc_tv_profile: "TV_Only"
+  pc_desk_profile: "2_Monitor"
+  pc_tv_input_label: "PC"
+
 
 commands:
   shutdown:
@@ -16,3 +21,7 @@ commands:
   ls:
     description: "ls"
     command: "dir"
+  switch_pc_to_tv:
+    description: "This command switches my TV input to PC and my PC monitor configuration to TV. Basically so I can have a 1 click button to switch"
+  switch_pc_back:
+    description: "Switches it back"
