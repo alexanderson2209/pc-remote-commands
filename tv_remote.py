@@ -25,6 +25,12 @@ def get_config_location():
     return os.path.join(get_base_path(), "tv-config.json")
 
 
+def get_3rd_party_folder():
+    if is_running_as_exe():
+        return os.path.join(sys._MEIPASS, "3rd-party")
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "3rd-party")
+
+
 def load_config():
     if os.path.isfile(get_config_location()):
         with open(get_config_location(), "r", encoding="utf-8") as f:
@@ -40,7 +46,7 @@ def save_config(config):
 def switch_to_tv_profile(profile_name):
     username = os.getlogin()
     profile_path = rf"C:\Users\{username}\AppData\Roaming\MonitorSwitcher\Profiles\{profile_name}.xml"
-    exe_path = os.path.join(get_base_path(), "3rd-party", "MonitorSwitcher.exe")
+    exe_path = os.path.join(get_3rd_party_folder(), "MonitorSwitcher.exe")
     print(f"Switching profile: {profile_path}")
     subprocess.run([exe_path, f"-load:{profile_path}"])
 

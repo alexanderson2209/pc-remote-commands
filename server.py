@@ -152,10 +152,10 @@ def run_server():
         app,
         host=config["server"]["host"],
         port=config["server"]["port"],
-        # log_level="critical",  # set log level to critical
-        # # Disable access logging. block console output
-        # access_log=False,
-        # log_config=None,
+        log_level="critical",  # set log level to critical
+        # Disable access logging. block console output
+        access_log=False,
+        log_config=None,
     )
 
 
