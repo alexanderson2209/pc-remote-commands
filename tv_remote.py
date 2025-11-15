@@ -66,30 +66,29 @@ class TVController:
         self.pc_tv_input_label = pc_tv_input_label
         self.store = load_config()
 
-        self.client = WebOSClient(tv_ip, secure=True)
-        self.open_tv_connection()
+        # self.open_tv_connection()
         self.save()
 
-        # Initialize controls
-        self.media = MediaControl(self.client)
-        self.app = ApplicationControl(self.client)
-        self.source_control = SourceControl(self.client)
-
-        # Store sources
-        self.sources: List[InputSource] = self.source_control.list_sources()
-        self.current_source = self.get_current_source()
-
-    def close_tv_connection(self):
-        self.client.close_connection()
-
     def open_tv_connection(self):
+        self.client = WebOSClient(self.tv_ip, secure=True)
         self.client.connect()
 
-        for status in self.client.register(self.store):
-            if status == WebOSClient.PROMPTED:
-                print("Please accept the connection on the TV!")
-            elif status == WebOSClient.REGISTERED:
-                print("Registration successful!")
+        try:
+            for status in self.client.register(self.store, timeout=10):
+                if status == WebOSClient.PROMPTED:
+                    print("Please accept the connection on the TV!")
+                elif status == WebOSClient.REGISTERED:
+                    print("Registration successful!")
+            connected = True
+            self.media = MediaControl(self.client)
+            self.app = ApplicationControl(self.client)
+            self.source_control = SourceControl(self.client)
+            self.sources: List[InputSource] = self.source_control.list_sources()
+            self.current_source = self.get_current_source()
+        except Exception as e:
+            print("Connection timed out")
+            connected = False
+        return connected
 
     def get_pc_source(self):
         return [x for x in self.sources if x["label"] == self.pc_tv_input_label][0]
@@ -105,6 +104,7 @@ class TVController:
         return possible_source[0]
 
     def switch_pc_to_tv(self):
+        self.open_tv_connection()
         # Storing current source so we can switch back later
         self.current_source = self.get_current_source()
         self.source_control.set_source(self.get_pc_source())
@@ -112,6 +112,7 @@ class TVController:
         switch_to_tv_profile(self.pc_tv_profile)
 
     def switch_pc_back(self):
+        self.open_tv_connection()
         switch_to_tv_profile(self.pc_desk_profile)
         self.source_control.set_source(self.current_source)
 

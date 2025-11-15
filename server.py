@@ -1,5 +1,6 @@
 import os
 import sys
+from pydantic import BaseModel
 import yaml
 import threading
 import subprocess
@@ -8,6 +9,7 @@ import uvicorn
 from pystray import Icon, MenuItem, Menu
 from PIL import Image
 from plyer import notification
+from copy_to_clipboard import copy_to_clipboard
 from tv_remote import TVController
 
 app = FastAPI()
@@ -65,6 +67,16 @@ def initialize():
 @app.get("/")
 def root():
     return {"message": "Command server is running."}
+
+
+class CopyRequest(BaseModel):
+    text: str
+
+
+@app.post("/clipboard")
+async def to_clipboard(request: CopyRequest):
+    copy_to_clipboard(request.text)
+    return {"status": "success", "message": "Copied to PC clipboard"}
 
 
 @app.post("/run/{command_name}")
