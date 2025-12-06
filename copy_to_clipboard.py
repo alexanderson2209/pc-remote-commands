@@ -11,6 +11,3 @@ def copy_to_clipboard(text: str):
         app_name="Clipboard Utility",
         timeout=3,  # seconds
     )
-
-
-copy_to_clipboard("hello world!")
