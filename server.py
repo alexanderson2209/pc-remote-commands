@@ -9,7 +9,7 @@ import uvicorn
 from pystray import Icon, MenuItem, Menu
 from PIL import Image
 from plyer import notification
-from copy_to_clipboard import copy_to_clipboard
+from copy_to_clipboard import copy_to_clipboard, retrieve_from_clipboard
 from tv_remote import TVController
 
 app = FastAPI()
@@ -77,6 +77,12 @@ class CopyRequest(BaseModel):
 async def to_clipboard(request: CopyRequest):
     copy_to_clipboard(request.text)
     return {"status": "success", "message": "Copied to PC clipboard"}
+
+
+@app.get("/clipboard")
+async def from_clipboard():
+    clipboard_contents: str = retrieve_from_clipboard()
+    return {"status": "success", "clipboard_contents": clipboard_contents}
 
 
 @app.post("/run/{command_name}")
